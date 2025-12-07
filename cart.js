@@ -1,11 +1,11 @@
 const body = document.querySelector("body");
 const main = document.querySelector(".main");
 
-const renderCart = (prodData)=>{
-
+const renderCart = (prodData)=>{    
     prodData.forEach(prod =>{
         const prodContainer = document.createElement("div");
         prodContainer.classList.add("prodContainer");
+        prodContainer.dataset.id = prod.id;
         
         const prodName = document.createElement("h4");
         prodName.innerText = prod.title;

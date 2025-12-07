@@ -26,7 +26,8 @@ const textValue = () =>{
     return productSearched;
 }
 
-const renderCard = (productData) => {
+const renderProductCard = (productData) => {
+
     const productCard = document.createElement("div");
     productCard.classList.add("productCard");
     productCard.dataset.id = productData.id;
@@ -51,33 +52,31 @@ const renderCard = (productData) => {
     productCard.appendChild(prodTitle);
     productCard.appendChild(prodPrice);
     productCard.appendChild(prodAddToCartBtn);
-    main.appendChild(productCard);    
-    
-    //let ItemCountValue = 0;    
+    main.appendChild(productCard);      
 
     prodAddToCartBtn.addEventListener("click", ()=>{
-        let prodsInCart = JSON.parse(window.localStorage.getItem("Carrito")) || [];
-        //recorrer prodsInCart (que es lo miosmo que esta en LS)
-            //por cada prod en prodsInCart Pregunto:
-                //El id === al id de lo que estoy agregando? (productData)
-                    //{...productData, quantity : prod.quantity+1}
-                //El id NO ES IGUAL ASI QUE EL PROD NO ESTABA ACA AGREGO:
+        let prodsInCart = JSON.parse(window.localStorage.getItem("Carrito"))|| [];
+        const existingProduct = prodsInCart.find(prod=>prod.id===productData.id)
 
-        const newProdWithQty = {...productData, quantity: 1};
-        
-        prodsInCart.push(newProdWithQty);
+        if(existingProduct){
+            existingProduct.quantity+=1
+        }else{
+            const newProdWithQty = {...productData, quantity: 1};
+            prodsInCart.push(newProdWithQty)
+        }
 
-        ItemCountValue = prodsInCart.length;
+        localStorage.setItem("Carrito", JSON.stringify(prodsInCart));
+        let ItemCountValue = 0;  
+        prodsInCart.forEach(prod=>{
+            ItemCountValue += prod.quantity
+        })
         cartItemCount.innerText = ItemCountValue;
         localStorage.setItem("cantItemsCarrito", ItemCountValue);
-        window.localStorage.setItem("Carrito", JSON.stringify(prodsInCart));
-        return prodsInCart;    
     })
 }
 
-
 if(prodsInCArtLocalStorage){
-    const itemCountLocalStorage = JSON.parse(window.localStorage.getItem("cantItemsCarrito"));
+    const itemCountLocalStorage =window.localStorage.getItem("cantItemsCarrito");
     cartItemCount.innerText = itemCountLocalStorage;
 }
 
@@ -99,7 +98,7 @@ const init = async () => {
     const products = data.products;
     
     products.forEach( prod => {
-        renderCard(prod);
+        renderProductCard(prod);
     })
 }
 
