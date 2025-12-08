@@ -52,17 +52,25 @@ const renderProductCard = (productData) => {
     productCard.appendChild(prodTitle);
     productCard.appendChild(prodPrice);
     productCard.appendChild(prodAddToCartBtn);
-    main.appendChild(productCard);      
+    main.appendChild(productCard);
+    
+    productCard.addEventListener("click", ()=>{
+        localStorage.setItem("infoProducto", JSON.stringify(productData));
+        window.location.href = "/detail.html";
+    })
 
-    prodAddToCartBtn.addEventListener("click", ()=>{
+    prodAddToCartBtn.addEventListener("click", (e)=>{
+        e.stopPropagation();
         let prodsInCart = JSON.parse(window.localStorage.getItem("Carrito"))|| [];
         const existingProduct = prodsInCart.find(prod=>prod.id===productData.id)
 
         if(existingProduct){
-            existingProduct.quantity+=1
+            existingProduct.quantity+=1;
+            messageAddedToCart(existingProduct.title);
         }else{
             const newProdWithQty = {...productData, quantity: 1};
             prodsInCart.push(newProdWithQty)
+            messageAddedToCart(newProdWithQty.title);
         }
 
         localStorage.setItem("Carrito", JSON.stringify(prodsInCart));
@@ -83,6 +91,16 @@ if(prodsInCArtLocalStorage){
 cartImg.addEventListener("click", () =>{
     window.location.href = "/cart.html";
 })
+
+const messageAddedToCart = (name)=>{
+    Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: `Se agregó ${name} al carrito`,
+    showConfirmButton: false,
+    timer: 1500
+    });
+}
 
 const getProducts = async () => {
     const url = `https://dummyjson.com/products`;

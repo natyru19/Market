@@ -1,0 +1,57 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.cartIconContainer{
+    text-align: right;
+}
+
+.cartImg{
+    cursor: pointer;
+}
+
+.detailTitle{
+    text-align: center;
+    background-color: darkgray;
+    height: 100px;
+    align-content: center;
+}
+
+.detailCard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.detailImg{
+    width: 200px;
+    height: 200px;
+}
+
+.detailDesc{
+    max-width: 400px;
+}
+
+.detailBtnContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.detailBuyBtn, .detailAddToCartBtn{
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    width: 150px;
+}
+
+.detailBuyBtn:hover, .detailAddToCartBtn:hover{
+    background-color:darkgrey;
+}
+
