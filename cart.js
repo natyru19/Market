@@ -1,5 +1,15 @@
 const body = document.querySelector("body");
-const main = document.querySelector(".main");
+const cartMain = document.querySelector(".cartMain");
+const cartImg = document.querySelector(".cartImg");
+
+let cartSaved = JSON.parse(window.localStorage.getItem("Carrito"));
+const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
+let itemCountLocalStorage = localStorage.getItem("cantItemsCarrito");
+
+const cartIconContainer = document.querySelector(".cartIconContainer");
+let cartItemCount = document.createElement("p");
+cartItemCount.classList.add("cartItemCount");
+cartIconContainer.appendChild(cartItemCount);
 
 const renderCart = (prodData)=>{    
     prodData.forEach(prod =>{
@@ -13,16 +23,77 @@ const renderCart = (prodData)=>{
         const prodQuantity = document.createElement("p");
         prodQuantity.innerText = `Cantidad: ${prod.quantity}`;
 
+        const deleteProdBtn = document.createElement("img");
+        deleteProdBtn.classList.add("deleteProdBtn");
+        deleteProdBtn.setAttribute("src", "/img/delete.png") 
+
         prodContainer.appendChild(prodName);
         prodContainer.appendChild(prodQuantity);
-        main.appendChild(prodContainer);
+        prodContainer.appendChild(deleteProdBtn);
+        cartMain.appendChild(prodContainer);
+
+        deleteProdBtn.addEventListener("click", ()=>{
+            messageProdDelete(prod);
+        });
     })
 }
 
-const cartSaved = JSON.parse(window.localStorage.getItem("Carrito"));
+const messageProdDelete = (prodData)=>{
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+        title: "Estás seguro?",
+        text: `Querés eliminar el producto ${prodData.title}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, elimínalo!",
+        cancelButtonText: "No, cancelar!",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+                title: "Eliminado!",
+                text: `El producto ${prodData.title} fue eliminado`,
+                icon: "success"
+                });
+
+                let updatedProdArray = [];
+                cartSaved.map(product =>{
+                    if(product.id != prodData.id){
+                        updatedProdArray.push(product);
+                    }
+                    cartSaved = updatedProdArray;                    
+                    localStorage.setItem("Carrito", JSON.stringify(cartSaved));
+                    cartMain.innerHTML = "";
+                    renderCart(cartSaved);
+                })                
+                itemCountLocalStorage = itemCountLocalStorage - prodData.quantity;                                   
+                localStorage.setItem("cantItemsCarrito", itemCountLocalStorage);
+                cartItemCount.innerText = itemCountLocalStorage;
+        } else if (
+        /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire({
+                title: "Cancelado",
+                text: `Se canceló antes de eliminar el producto ${prodData.title}`,
+                icon: "error"
+            });
+        }
+    });
+}
+
 if(cartSaved){
-    console.log("productos en el carrito: ", cartSaved);
     renderCart(cartSaved);
+}
+
+if(prodsInCArtLocalStorage){    
+    cartItemCount.innerText = itemCountLocalStorage;
 }
 
 const backBtn = document.querySelector(".backBtn");
@@ -33,11 +104,8 @@ backBtn.addEventListener("click", () => {
 const deleteCartBtn = document.createElement("button");
 deleteCartBtn.innerText = "Borrar carrito";
 body.appendChild(deleteCartBtn);
-deleteCartBtn.addEventListener("click", () => {    
-    //localStorage.removeItem("Carrito");
-    //console.log("se borró el carrito");
+deleteCartBtn.addEventListener("click", () => {
     localStorage.clear();
-    console.log("se borró todo del local storage");
-    main.innerHTML = "";
-    
+    cartMain.innerHTML = "";    
+    cartItemCount.innerHTML = "";    
 })

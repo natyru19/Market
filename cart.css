@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.cartIconContainer{
+    text-align: right;
+}
+
 .cartTitle{
     text-align: center;
     align-content:  center;
@@ -15,4 +19,32 @@
     display: flex;
     gap: 20px;
     align-items: center;
+}
+
+.deleteProdBtn{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.btn-success{
+    background-color: green;
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    color: #ffffff;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.btn-danger{
+    background-color: red;
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    color: #ffffff;
+    margin: 10px;
+    cursor: pointer;
 }
