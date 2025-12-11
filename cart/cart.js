@@ -5,6 +5,7 @@ const cartImg = document.querySelector(".cartImg");
 let cartSaved = JSON.parse(window.localStorage.getItem("Carrito"));
 const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
 let itemCountLocalStorage = localStorage.getItem("cantItemsCarrito");
+const productStock = localStorage.getItem("prodStock");
 
 const cartIconContainer = document.querySelector(".cartIconContainer");
 let cartItemCount = document.createElement("p");
@@ -16,6 +17,10 @@ const renderCart = (prodData)=>{
         const prodContainer = document.createElement("div");
         prodContainer.classList.add("prodContainer");
         prodContainer.dataset.id = prod.id;
+
+        const prodImg = document.createElement("img");
+        prodImg.classList.add("prodImg");
+        prodImg.setAttribute("src", "/img/pending.png");
         
         const prodName = document.createElement("h4");
         prodName.innerText = prod.title;
@@ -27,6 +32,7 @@ const renderCart = (prodData)=>{
         deleteProdBtn.classList.add("deleteProdBtn");
         deleteProdBtn.setAttribute("src", "/img/delete.png") 
 
+        prodContainer.appendChild(prodImg);
         prodContainer.appendChild(prodName);
         prodContainer.appendChild(prodQuantity);
         prodContainer.appendChild(deleteProdBtn);
@@ -103,9 +109,102 @@ backBtn.addEventListener("click", () => {
 
 const deleteCartBtn = document.createElement("button");
 deleteCartBtn.innerText = "Borrar carrito";
-body.appendChild(deleteCartBtn);
+cartMain.appendChild(deleteCartBtn);
+
 deleteCartBtn.addEventListener("click", () => {
-    localStorage.clear();
-    cartMain.innerHTML = "";    
-    cartItemCount.innerHTML = "";    
+        messageToConfirmCartDelete();
 })
+
+const cartBuyBtn = document.createElement("button");
+cartBuyBtn.classList.add("cartBuyBtn");
+cartBuyBtn.innerText = "Comprar";
+cartMain.appendChild(cartBuyBtn);
+
+cartBuyBtn.addEventListener("click", ()=>{
+    messageToConfirmPurchase();
+    //localStorage.setItem("prodStock");
+    //console.log("aca esta la cantidad que hay en LS", productStock);
+    //window.location.href = "/purchases/purchases.html";
+})
+
+const messageToConfirmCartDelete = () =>{
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+        title: "Estás seguro?",
+        text: `Querés eliminar todo el carrito?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, elimínalo!",
+        cancelButtonText: "No, cancelar!",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+                title: "Eliminado!",
+                text: `Se eliminó el carrito`,
+                icon: "success"
+                });
+
+                localStorage.clear();
+                cartMain.innerHTML = "";    
+                cartItemCount.innerHTML = "";
+                window.location.href = "/index.html";
+        } else if (
+        /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire({
+                title: "Cancelado",
+                text: `Se canceló antes de eliminar el carrito`,
+                icon: "error"
+            });
+        }
+    });
+}
+
+const messageToConfirmPurchase = () =>{
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+        title: "Estás seguro?",
+        text: `Querés realizar la compra?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, comprar!",
+        cancelButtonText: "No, cancelar!",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire({
+                title: "Comprado!",
+                text: `Se compró el carrito`,
+                icon: "success"
+                });
+
+                localStorage.clear();
+                cartMain.innerHTML = "";    
+                cartItemCount.innerHTML = "";
+                window.location.href = "/index.html";
+        } else if (
+        /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire({
+                title: "Cancelado",
+                text: `Se canceló antes de comprar el carrito`,
+                icon: "error"
+            });
+        }
+    });
+}

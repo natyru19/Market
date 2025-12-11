@@ -7,8 +7,10 @@ let cartItemCount = document.createElement("p");
 cartItemCount.classList.add("cartItemCount");
 cartIconContainer.appendChild(cartItemCount);
 
-const productSelected = JSON.parse(localStorage.getItem("infoProducto"));
+let productSelected = JSON.parse(localStorage.getItem("infoProducto"));
+
 const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
+
 
 const renderDetailCard = (productData)=>{
     const detailCard = document.createElement("div");
@@ -39,6 +41,21 @@ const renderDetailCard = (productData)=>{
     detailStock.classList.add("detailStock");
     detailStock.innerText = `Stock: ${productData.stock}`;
 
+    const detailQtyContainer = document.createElement("div");
+    detailQtyContainer.classList.add("detailQtyContainer");
+
+    const detailMinQtyBtn = document.createElement("button");
+    detailMinQtyBtn.classList.add("detailMinQtyBtn");
+    detailMinQtyBtn.innerText = "-";
+
+    const detailSelectedQty = document.createElement("p");
+    detailSelectedQty.classList.add("detailSelectedQty");
+    detailSelectedQty.innerText = productData.quantity;
+
+    const detailMaxQtyBtn = document.createElement("button");
+    detailMaxQtyBtn.classList.add("detailMaxQtyBtn");
+    detailMaxQtyBtn.innerText = "+";
+
     const detailBtnContainer = document.createElement("div");
     detailBtnContainer.classList.add("detailBtnContainer");
 
@@ -56,10 +73,32 @@ const renderDetailCard = (productData)=>{
     detailCard.appendChild(detailDesc);
     detailCard.appendChild(detailCat);
     detailCard.appendChild(detailStock);
+    detailQtyContainer.appendChild(detailMinQtyBtn);
+    detailQtyContainer.appendChild(detailSelectedQty);
+    detailQtyContainer.appendChild(detailMaxQtyBtn);
+    detailCard.appendChild(detailQtyContainer);
     detailCard.appendChild(detailBtnContainer);
     detailBtnContainer.appendChild(detailBuyBtn);
     detailBtnContainer.appendChild(detailAddToCartBtn);
     detailMain.appendChild(detailCard);
+    
+    let qty = productData.quantity;
+
+    detailMinQtyBtn.addEventListener("click", () =>{
+        if(productData.quantity>1){
+            qty = qty-1;
+            productData.quantity = qty;
+            detailSelectedQty.innerText = productData.quantity;
+            qty=productData.quantity;
+        }        
+    });
+
+    detailMaxQtyBtn.addEventListener("click", () =>{
+        qty = qty+1;
+        productData.quantity = qty;
+        detailSelectedQty.innerText = productData.quantity;
+        qty=productData.quantity;        
+    });
 
     detailAddToCartBtn.addEventListener("click", ()=>{
         let prodsInCart = JSON.parse(localStorage.getItem("Carrito"))|| [];
@@ -67,10 +106,11 @@ const renderDetailCard = (productData)=>{
         const existingProduct = prodsInCart.find(prod=>prod.id===productData.id)
 
         if(existingProduct){
-            existingProduct.quantity+=1;            
+            existingProduct.quantity+=qty;            
             messageAddedToCart(existingProduct.title);
         }else{
-            const newProdWithQty = {...productData, quantity: 1};            
+            
+            const newProdWithQty = productData;            
             prodsInCart.push(newProdWithQty);            
             messageAddedToCart(newProdWithQty.title);
         }
@@ -85,17 +125,25 @@ const renderDetailCard = (productData)=>{
     })
 
     detailBuyBtn.addEventListener("click", ()=>{
-        window.location.href = "/purchases.html";
+        messageToConfirmPurchase(productData.title);
     })
 }
 
 const messageAddedToCart = (name)=>{
-    Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: `Se agregó ${name} al carrito`,
-    showConfirmButton: false,
-    timer: 1500
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: "success",
+        title: `Se agregó ${name} al carrito`
     });
 }
 
@@ -115,7 +163,9 @@ const messageToConfirmPurchase = (name) =>{
             text: `Se compró el producto ${name}`,
             icon: "success"
             });
-            window.location.href = "/purchases.html";
+                        
+            localStorage.setItem("purchaseConfirm", JSON.stringify(productSelected));
+            window.location.href = "/purchases/purchases.html";
         }
     });
 }
@@ -126,7 +176,7 @@ if(prodsInCArtLocalStorage){
 }
 
 cartImg.addEventListener("click", () =>{
-    window.location.href = "/cart.html";
+    window.location.href = "/cart/cart.html";
 })
 
 const detailBackBtn = document.createElement("button");

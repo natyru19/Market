@@ -1,3 +1,4 @@
+const purchasesImg = document.querySelector(".purchasesImg");
 const cartImg = document.querySelector(".cartImg");
 const searchInput = document.getElementById("searchInput");
 const searchImg = document.querySelector(".searchImg");
@@ -9,7 +10,12 @@ cartItemCount.classList.add("cartItemCount");
 cartIconContainer.appendChild(cartItemCount);
 
 let addedToCart;
-const prodsInCArtLocalStorage = JSON.parse(window.localStorage.getItem("Carrito"));
+const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
+const productStock = localStorage.getItem("prodStock");
+
+purchasesImg.addEventListener("click", ()=>{
+    window.location.href = "/purchases/purchases.html";
+})
 
 searchInput.addEventListener("keydown", (e)=>{
     if(e.key == "Enter"){
@@ -55,8 +61,9 @@ const renderProductCard = (productData) => {
     main.appendChild(productCard);
     
     productCard.addEventListener("click", ()=>{
-        localStorage.setItem("infoProducto", JSON.stringify(productData));
-        window.location.href = "/detail.html";
+        productData = {...productData, quantity: 1}
+        localStorage.setItem("infoProducto", JSON.stringify(productData));        
+        window.location.href = "/detail/detail.html";
     })
 
     prodAddToCartBtn.addEventListener("click", (e)=>{
@@ -89,16 +96,24 @@ if(prodsInCArtLocalStorage){
 }
 
 cartImg.addEventListener("click", () =>{
-    window.location.href = "/cart.html";
+    window.location.href = "/cart/cart.html";
 })
 
 const messageAddedToCart = (name)=>{
-    Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: `Se agregó ${name} al carrito`,
-    showConfirmButton: false,
-    timer: 1500
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: "success",
+        title: `Se agregó ${name} al carrito`
     });
 }
 

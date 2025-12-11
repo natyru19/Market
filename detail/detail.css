@@ -9,8 +9,23 @@
 }
 
 .cartImg{
+    width: 55px;
+    height: 55px;
     cursor: pointer;
 }
+
+/*
+.cartItemCount{
+    border-radius: 50%;
+    background-color: red;
+    color: #ffffff;
+    width: 30px;
+    height: 30px;
+    display:inline-block;
+    text-align: center;
+    align-content: center;
+    font-weight: bold;
+}*/
 
 .detailTitle{
     text-align: center;
@@ -34,6 +49,18 @@
 
 .detailDesc{
     max-width: 400px;
+}
+
+.detailQtyContainer{
+    display: flex;
+    gap: 10px;
+    font-size: 18px;
+    align-items: center;
+}
+
+.detailMinQtyBtn, .detailMaxQtyBtn{
+    width: 30px;
+    font-size: 20px;
 }
 
 .detailBtnContainer{
