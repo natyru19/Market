@@ -8,9 +8,16 @@ cartItemCount.classList.add("cartItemCount");
 cartIconContainer.appendChild(cartItemCount);
 
 let productSelected = JSON.parse(localStorage.getItem("infoProducto"));
-
 const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
 
+const detailBackBtn = document.createElement("button");
+detailBackBtn.classList.add("detailBackBtn");
+detailBackBtn.innerText = "Volver";
+detailMain.appendChild(detailBackBtn);
+
+detailBackBtn.addEventListener("click", ()=>{
+    window.location.href = "/index.html";
+});
 
 const renderDetailCard = (productData)=>{
     const detailCard = document.createElement("div");
@@ -129,6 +136,8 @@ const renderDetailCard = (productData)=>{
     })
 }
 
+renderDetailCard(productSelected);
+
 const messageAddedToCart = (name)=>{
     const Toast = Swal.mixin({
         toast: true,
@@ -163,8 +172,11 @@ const messageToConfirmPurchase = (name) =>{
             text: `Se compró el producto ${name}`,
             icon: "success"
             });
-                        
+
             localStorage.setItem("purchaseConfirm", JSON.stringify(productSelected));
+            let purchasesMade = JSON.parse(localStorage.getItem("purchasesMade")) || [];
+            purchasesMade.push(productSelected);
+            localStorage.setItem("purchasesMade", JSON.stringify(purchasesMade));            
             window.location.href = "/purchases/purchases.html";
         }
     });
@@ -178,18 +190,6 @@ if(prodsInCArtLocalStorage){
 cartImg.addEventListener("click", () =>{
     window.location.href = "/cart/cart.html";
 })
-
-const detailBackBtn = document.createElement("button");
-detailBackBtn.classList.add("detailBackBtn");
-detailBackBtn.innerText = "Volver";
-detailMain.appendChild(detailBackBtn);
-
-detailBackBtn.addEventListener("click", ()=>{
-    window.location.href = "/index.html";
-});
-
-renderDetailCard(productSelected);
-
 
 
 

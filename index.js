@@ -1,3 +1,4 @@
+const allPurchasesImg = document.querySelector(".allPurchasesImg");
 const purchasesImg = document.querySelector(".purchasesImg");
 const cartImg = document.querySelector(".cartImg");
 const searchInput = document.getElementById("searchInput");
@@ -13,8 +14,8 @@ let addedToCart;
 const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
 const productStock = localStorage.getItem("prodStock");
 
-purchasesImg.addEventListener("click", ()=>{
-    window.location.href = "/purchases/purchases.html";
+allPurchasesImg.addEventListener("click", ()=>{
+    window.location.href = "/allPurchases/allPurchases.html";
 })
 
 searchInput.addEventListener("keydown", (e)=>{
@@ -68,7 +69,7 @@ const renderProductCard = (productData) => {
 
     prodAddToCartBtn.addEventListener("click", (e)=>{
         e.stopPropagation();
-        let prodsInCart = JSON.parse(window.localStorage.getItem("Carrito"))|| [];
+        let prodsInCart = JSON.parse(localStorage.getItem("Carrito"))|| [];
         const existingProduct = prodsInCart.find(prod=>prod.id===productData.id)
 
         if(existingProduct){
@@ -91,7 +92,7 @@ const renderProductCard = (productData) => {
 }
 
 if(prodsInCArtLocalStorage){
-    const itemCountLocalStorage =window.localStorage.getItem("cantItemsCarrito");
+    const itemCountLocalStorage =localStorage.getItem("cantItemsCarrito");
     cartItemCount.innerText = itemCountLocalStorage;
 }
 
@@ -107,8 +108,8 @@ const messageAddedToCart = (name)=>{
         timer: 1000,
         timerProgressBar: false,
         didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
         }
     });
     Toast.fire({

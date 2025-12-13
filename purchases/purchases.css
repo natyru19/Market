@@ -17,15 +17,13 @@
 }
 
 .purchaseCard{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-items: center;
     gap: 10px;
 }
 
-.confirmPurchaseContainer{
-    justify-items: center;    
-    margin-top: 30px;
+.detailsProductPurchasedContainer{
+    display: flex;
+    gap: 30px;
 }
 
 .confirmPurchaseBtn{

@@ -10,6 +10,12 @@
     gap: 20px;
 }
 
+.allPurchasesImg{
+    width: 65px;
+    height: 65px;
+    cursor: pointer;
+}
+
 .purchasesImg{
     width: 55px;
     height: 55px;

@@ -2,7 +2,7 @@ const body = document.querySelector("body");
 const cartMain = document.querySelector(".cartMain");
 const cartImg = document.querySelector(".cartImg");
 
-let cartSaved = JSON.parse(window.localStorage.getItem("Carrito"));
+let cartSaved = JSON.parse(localStorage.getItem("Carrito"));
 const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
 let itemCountLocalStorage = localStorage.getItem("cantItemsCarrito");
 const productStock = localStorage.getItem("prodStock");
@@ -82,7 +82,6 @@ const messageProdDelete = (prodData)=>{
                 localStorage.setItem("cantItemsCarrito", itemCountLocalStorage);
                 cartItemCount.innerText = itemCountLocalStorage;
         } else if (
-        /* Read more about handling dismissals below */
             result.dismiss === Swal.DismissReason.cancel
         ) {
             swalWithBootstrapButtons.fire({
@@ -154,9 +153,9 @@ const messageToConfirmCartDelete = () =>{
                 localStorage.clear();
                 cartMain.innerHTML = "";    
                 cartItemCount.innerHTML = "";
+                allPurchasesMain.innerHTML = "";
                 window.location.href = "/index.html";
         } else if (
-        /* Read more about handling dismissals below */
             result.dismiss === Swal.DismissReason.cancel
         ) {
             swalWithBootstrapButtons.fire({
@@ -197,7 +196,6 @@ const messageToConfirmPurchase = () =>{
                 cartItemCount.innerHTML = "";
                 window.location.href = "/index.html";
         } else if (
-        /* Read more about handling dismissals below */
             result.dismiss === Swal.DismissReason.cancel
         ) {
             swalWithBootstrapButtons.fire({
