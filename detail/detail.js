@@ -173,11 +173,49 @@ const messageToConfirmPurchase = (name) =>{
             icon: "success"
             });
 
-            localStorage.setItem("purchaseConfirm", JSON.stringify(productSelected));
-            let purchasesMade = JSON.parse(localStorage.getItem("purchasesMade")) || [];
-            purchasesMade.push(productSelected);
-            localStorage.setItem("purchasesMade", JSON.stringify(purchasesMade));            
-            window.location.href = "/purchases/purchases.html";
+        const today = new Date();
+
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const day = today.getDate();
+
+        const hours = today.getHours();
+        const minutes = today.getMinutes();
+        const seconds = today.getSeconds();
+
+        const hoursFormat = hours < 10 ? '0' + hours : hours;
+        const minutesFormat = minutes < 10 ? '0' + minutes : minutes;
+        const secondsFormat = seconds < 10 ? '0' + seconds : seconds;
+
+        const dateFormat = `${day}/${month}/${year} ${hoursFormat}:${minutesFormat}:${secondsFormat}`;
+
+        const confPurchDateTime = document.createElement("p");
+        confPurchDateTime.classList.add("confPurchDateTime");
+        confPurchDateTime.innerText = `Fecha: ${dateFormat}`;
+
+        const confPurchTotal = document.createElement("p");
+        confPurchTotal.classList.add("confPurchTotal");
+
+        let totalPurchase = productSelected.price * productSelected.quantity;
+        totalPurchase = Math.round(totalPurchase * 100) / 100;    
+        confPurchTotal.innerText = `Total de la compra: $ ${totalPurchase}`;
+
+        const finalPurchase = {
+            id: productSelected.id,
+            img: productSelected.images[0],
+            title: productSelected.title,
+            qty: productSelected.quantity,
+            price: productSelected.price,
+            date: dateFormat,
+            total: totalPurchase
+        }
+
+        localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
+
+        let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+        history.push(finalPurchase);
+        localStorage.setItem("purchaseHistory", JSON.stringify(history));            
+        window.location.href = "/purchases/purchases.html";
         }
     });
 }

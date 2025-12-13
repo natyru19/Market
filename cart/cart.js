@@ -121,9 +121,6 @@ cartMain.appendChild(cartBuyBtn);
 
 cartBuyBtn.addEventListener("click", ()=>{
     messageToConfirmPurchase();
-    //localStorage.setItem("prodStock");
-    //console.log("aca esta la cantidad que hay en LS", productStock);
-    //window.location.href = "/purchases/purchases.html";
 })
 
 const messageToConfirmCartDelete = () =>{
@@ -153,7 +150,6 @@ const messageToConfirmCartDelete = () =>{
                 localStorage.clear();
                 cartMain.innerHTML = "";    
                 cartItemCount.innerHTML = "";
-                allPurchasesMain.innerHTML = "";
                 window.location.href = "/index.html";
         } else if (
             result.dismiss === Swal.DismissReason.cancel

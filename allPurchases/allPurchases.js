@@ -1,8 +1,6 @@
 const allPurchasesMain = document.querySelector(".allPurchasesMain");
 
-const prodPurchased = JSON.parse(localStorage.getItem("prodPurchased"));
-const purchasesMade = JSON.parse(localStorage.getItem("purchasesMade"));
-let purchaseSummary = JSON.parse(localStorage.getItem("purchaseSummary"));
+const history = JSON.parse(localStorage.getItem("purchaseHistory"));
 
 const allPurchaseBackBtn = document.createElement("button");
 allPurchaseBackBtn.classList.add("allPurchaseBackBtn");
@@ -10,7 +8,7 @@ allPurchaseBackBtn.innerText = "Volver";
 allPurchasesMain.appendChild(allPurchaseBackBtn);
 
 allPurchaseBackBtn.addEventListener("click", ()=>{    
-        window.location.href = "/index.html";
+    window.location.href = "/index.html";
 });
 
 const renderCardAllPurchases = (data) =>{
@@ -59,6 +57,6 @@ const renderCardAllPurchases = (data) =>{
     allPurchasesMain.appendChild(purchaseCard);
 }
 
-purchaseSummary.forEach(purchase =>{
+history.forEach(purchase =>{
     renderCardAllPurchases(purchase);
 })

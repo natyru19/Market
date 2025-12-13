@@ -1,6 +1,7 @@
 const purchasesMain = document.querySelector(".purchasesMain");
 const productPurchased = JSON.parse(localStorage.getItem("infoProducto"));
-const purchaseConfirm = JSON.parse(localStorage.getItem("purchaseConfirm"));
+
+const currentPurchase = JSON.parse(localStorage.getItem("purchaseCurrent"));
 
 const purchaseBackBtn = document.createElement("button");
 purchaseBackBtn.classList.add("purchaseBackBtn");
@@ -14,33 +15,6 @@ purchaseBackBtn.addEventListener("click", ()=>{
         window.location.href = "/detail/detail.html";
     }
 });
-
-const today = new Date();
-
-const year = today.getFullYear();
-const month = today.getMonth() + 1;
-const day = today.getDate();
-
-const hours = today.getHours();
-const minutes = today.getMinutes();
-const seconds = today.getSeconds();
-
-const hoursFormat = hours < 10 ? '0' + hours : hours;
-const minutesFormat = minutes < 10 ? '0' + minutes : minutes;
-const secondsFormat = seconds < 10 ? '0' + seconds : seconds;
-
-const dateFormat = `${day}/${month}/${year} ${hoursFormat}:${minutesFormat}:${secondsFormat}`;
-
-const confPurchDateTime = document.createElement("p");
-confPurchDateTime.classList.add("confPurchDateTime");
-confPurchDateTime.innerText = `Fecha: ${dateFormat}`;
-
-const confPurchTotal = document.createElement("p");
-confPurchTotal.classList.add("confPurchTotal");
-
-let totalPurchase = purchaseConfirm.price * purchaseConfirm.quantity;
-totalPurchase = Math.round(totalPurchase * 100) / 100;    
-confPurchTotal.innerText = `Total de la compra: $ ${totalPurchase}`;
 
 const renderCardPurchases = (purchaseData) =>{
 
@@ -61,7 +35,7 @@ const renderCardPurchases = (purchaseData) =>{
 
     const purchaseProdQty = document.createElement("p");
     purchaseProdQty.classList.add("purchaseProdQty");
-    purchaseProdQty.innerText = `Cantidad: ${purchaseData.quantity}`;
+    purchaseProdQty.innerText = `Cantidad: ${purchaseData.qty}`;
 
     const purchaseProdPrice = document.createElement("p");
     purchaseProdPrice.classList.add("purchaseProdPrice");
@@ -69,6 +43,16 @@ const renderCardPurchases = (purchaseData) =>{
 
     const confirmPurchaseContainer = document.createElement("div");
     confirmPurchaseContainer.classList.add("confirmPurchaseContainer");
+
+    const confPurchDateTime = document.createElement("p");
+    confPurchDateTime.classList.add("confPurchDateTime");
+    confPurchDateTime.innerText = `Fecha: ${purchaseData.date}`;
+
+    const confPurchTotal = document.createElement("p");
+    confPurchTotal.classList.add("confPurchTotal");
+    let totalPurchase = purchaseData.price * purchaseData.qty;
+    totalPurchase = Math.round(totalPurchase * 100) / 100;    
+    confPurchTotal.innerText = `Total de la compra: $ ${purchaseData.total}`;
 
     detailsProductPurchasedContainer.appendChild(purchaseProdImg);
     detailsProductPurchasedContainer.appendChild(purchaseProdTitle);
@@ -81,22 +65,7 @@ const renderCardPurchases = (purchaseData) =>{
     purchasesMain.appendChild(purchaseCard);    
 }
 
-const finalPurchase = {
-    id: purchaseConfirm.id,
-    img: purchaseConfirm.images[0],
-    title: purchaseConfirm.title,
-    qty: purchaseConfirm.quantity,
-    price: purchaseConfirm.price,
-    date: dateFormat,
-    total: totalPurchase
-}
-
-let purchaseSummary = JSON.parse(localStorage.getItem("purchaseSummary")) || [];
-purchaseSummary.push(finalPurchase);
-localStorage.setItem("purchaseSummary", JSON.stringify(purchaseSummary));
-
-JSON.parse(localStorage.getItem("purchaseSummary"));
-renderCardPurchases(purchaseConfirm);
+renderCardPurchases(currentPurchase);
 
 
 
