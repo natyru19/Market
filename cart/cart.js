@@ -2,8 +2,7 @@ const body = document.querySelector("body");
 const cartMain = document.querySelector(".cartMain");
 const cartImg = document.querySelector(".cartImg");
 
-let cartSaved = JSON.parse(localStorage.getItem("Carrito"));
-const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
+let prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
 let itemCountLocalStorage = localStorage.getItem("cantItemsCarrito");
 const productStock = localStorage.getItem("prodStock");
 
@@ -13,20 +12,19 @@ cartItemCount.classList.add("cartItemCount");
 cartIconContainer.appendChild(cartItemCount);
 
 const renderCart = (prodData)=>{    
-    prodData.forEach(prod =>{
-        const prodContainer = document.createElement("div");
+    const prodContainer = document.createElement("div");
         prodContainer.classList.add("prodContainer");
-        prodContainer.dataset.id = prod.id;
+        prodContainer.dataset.id = prodData.id;
 
         const prodImg = document.createElement("img");
         prodImg.classList.add("prodImg");
         prodImg.setAttribute("src", "/img/pending.png");
         
         const prodName = document.createElement("h4");
-        prodName.innerText = prod.title;
+        prodName.innerText = prodData.title;
 
         const prodQuantity = document.createElement("p");
-        prodQuantity.innerText = `Cantidad: ${prod.quantity}`;
+        prodQuantity.innerText = `Cantidad: ${prodData.quantity}`;
 
         const deleteProdBtn = document.createElement("img");
         deleteProdBtn.classList.add("deleteProdBtn");
@@ -39,9 +37,8 @@ const renderCart = (prodData)=>{
         cartMain.appendChild(prodContainer);
 
         deleteProdBtn.addEventListener("click", ()=>{
-            messageProdDelete(prod);
+            messageProdDelete(prodData);
         });
-    })
 }
 
 const messageProdDelete = (prodData)=>{
@@ -93,8 +90,10 @@ const messageProdDelete = (prodData)=>{
     });
 }
 
-if(cartSaved){
-    renderCart(cartSaved);
+if(prodsInCArtLocalStorage){
+    prodsInCArtLocalStorage.forEach(prod =>{
+        renderCart(prod);
+    })
 }
 
 if(prodsInCArtLocalStorage){    
@@ -185,12 +184,80 @@ const messageToConfirmPurchase = () =>{
                 title: "Comprado!",
                 text: `Se compró el carrito`,
                 icon: "success"
-                });
+            });
 
-                localStorage.clear();
-                cartMain.innerHTML = "";    
-                cartItemCount.innerHTML = "";
-                window.location.href = "/index.html";
+            const today = new Date();
+
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+
+            const hours = today.getHours();
+            const minutes = today.getMinutes();
+            const seconds = today.getSeconds();
+
+            const hoursFormat = hours < 10 ? '0' + hours : hours;
+            const minutesFormat = minutes < 10 ? '0' + minutes : minutes;
+            const secondsFormat = seconds < 10 ? '0' + seconds : seconds;
+
+            const dateFormat = `${day}/${month}/${year} ${hoursFormat}:${minutesFormat}:${secondsFormat}`;
+
+            const confPurchDateTime = document.createElement("p");
+            confPurchDateTime.classList.add("confPurchDateTime");
+            confPurchDateTime.innerText = `Fecha: ${dateFormat}`;
+
+            const confPurchTotal = document.createElement("p");
+            confPurchTotal.classList.add("confPurchTotal");
+
+            let totalPurchase = prodsInCArtLocalStorage.price * prodsInCArtLocalStorage.quantity;
+            totalPurchase = Math.round(totalPurchase * 100) / 100;    
+            confPurchTotal.innerText = `Total de la compra: $ ${totalPurchase}`;
+
+            const lastPurchaseIdInLocalStorage = JSON.parse(localStorage.getItem("lastPurchaseId"));
+
+            let lastPurchaseId;
+            if(prodsInCArtLocalStorage){ 
+                if(lastPurchaseIdInLocalStorage==null){
+                    lastPurchaseId = 1;
+                }else{
+                    lastPurchaseId = lastPurchaseIdInLocalStorage + 1;                    
+                }
+                let buyerName = prompt("Ingrese su nombre");                
+                const products = prodsInCArtLocalStorage.map(prod =>{
+                    return {
+                        id: prod.id,
+                        qty: prod.quantity,
+                        unitPrice: prod.price
+                    }
+                })
+
+                let totalAmount = 0;
+
+                products.forEach(prod =>{
+                    totalAmount += prod.qty * prod.unitPrice;
+                    totalAmount = Math.round(totalAmount * 100) / 100;
+                })
+
+                const finalPurchase = {
+                    purchaseId: lastPurchaseId,
+                    buyerId: buyerName,
+                    products: products,
+                    purchaseDate: dateFormat,
+                    totalAmount: totalAmount
+                }
+
+                lastPurchaseId = finalPurchase.purchaseId;
+
+                localStorage.setItem("compraCarrito", JSON.stringify(finalPurchase));
+
+                localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
+                
+                localStorage.setItem("lastPurchaseId", JSON.stringify(lastPurchaseId));
+            }
+            
+            cartMain.innerHTML = "";    
+            cartItemCount.innerHTML = "";
+            window.location.href = "/purchases/purchases.html";
         } else if (
             result.dismiss === Swal.DismissReason.cancel
         ) {

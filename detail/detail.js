@@ -8,7 +8,7 @@ cartItemCount.classList.add("cartItemCount");
 cartIconContainer.appendChild(cartItemCount);
 
 let productSelected = JSON.parse(localStorage.getItem("infoProducto"));
-const prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
+let prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito")) || [];
 
 const detailBackBtn = document.createElement("button");
 detailBackBtn.classList.add("detailBackBtn");
@@ -200,17 +200,37 @@ const messageToConfirmPurchase = (name) =>{
         totalPurchase = Math.round(totalPurchase * 100) / 100;    
         confPurchTotal.innerText = `Total de la compra: $ ${totalPurchase}`;
 
-        const finalPurchase = {
-            id: productSelected.id,
-            img: productSelected.images[0],
-            title: productSelected.title,
-            qty: productSelected.quantity,
-            price: productSelected.price,
-            date: dateFormat,
-            total: totalPurchase
+        console.log("prods en carrito", prodsInCArtLocalStorage)
+        if(prodsInCArtLocalStorage==null){
+            
+            
+            const lastPurchaseId = 0;
+            let buyerName = prompt("Ingrese su nombre");
+            let products = prodsInCArtLocalStorage.map(product =>{
+                product.id,
+                product.quantity,
+                product.unitPrice
+            })
+
+            const finalPurchase = {
+            purchaseId: lastPurchaseId+1,
+            buyerId: buyerName,
+            products: products,
+            purchaseDate: dateFormat,
+            totalAmount: totalPurchase
         }
 
+        localStorage.setItem("Carrito", JSON.stringify(finalPurchase));
+
+
         localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
+        console.log(finalPurchase);
+        
+        localStorage.setItem("lastPurchaseId", JSON.stringify(lastPurchaseId));
+        console.log("ultimo id de compra", lastPurchaseId);
+        }
+
+        prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
 
         let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
         history.push(finalPurchase);

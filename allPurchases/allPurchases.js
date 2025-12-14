@@ -1,6 +1,6 @@
 const allPurchasesMain = document.querySelector(".allPurchasesMain");
 
-const history = JSON.parse(localStorage.getItem("purchaseHistory"));
+const history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
 
 const allPurchaseBackBtn = document.createElement("button");
 allPurchaseBackBtn.classList.add("allPurchaseBackBtn");
