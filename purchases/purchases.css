@@ -40,4 +40,27 @@
 .confirmPurchaseBtn:hover{
     background-color:darkgreen;
 }
+.moreInfoPurchase{
+    display: flex;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;    
+}
+
+.moreInfoPurchase:hover{
+    background-color: darkgray;
+}
+
+.purchaseProdCardMoreInfo{
+    background-color:slategrey;
+    margin: 20px;
+    width: 200px;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.purchaseProdImgMoreInfo{
+    width: 50px;
+    height: 50px;
+}
 
