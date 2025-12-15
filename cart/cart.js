@@ -232,10 +232,15 @@ const messageToConfirmPurchase = () =>{
                 })
 
                 let totalAmount = 0;
+                let totalQty = 0;
 
                 products.forEach(prod =>{
                     totalAmount += prod.qty * prod.unitPrice;
                     totalAmount = Math.round(totalAmount * 100) / 100;
+                })
+
+                products.forEach(prod =>{
+                    totalQty += prod.qty;
                 })
 
                 const finalPurchase = {
@@ -243,6 +248,7 @@ const messageToConfirmPurchase = () =>{
                     buyerId: buyerName,
                     products: products,
                     purchaseDate: dateFormat,
+                    totalQty: totalQty,
                     totalAmount: totalAmount
                 }
 

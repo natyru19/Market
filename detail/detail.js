@@ -193,6 +193,15 @@ const messageToConfirmPurchase = (name) =>{
         confPurchDateTime.classList.add("confPurchDateTime");
         confPurchDateTime.innerText = `Fecha: ${dateFormat}`;
 
+        const confPurchTotalQty = document.createElement("p");
+        confPurchTotalQty.classList.add("confPurchTotalQty");
+
+        console.log("cant del prod seleccionado", productSelected.quantity);
+        
+        let totalProdQty = totalProdQty + productSelected.quantity;
+        console.log("cant total de prods", totalProdQty);
+        totalProdQty.innerText = `Cantidad total de productos: $ ${totalProdQty}`;
+
         const confPurchTotal = document.createElement("p");
         confPurchTotal.classList.add("confPurchTotal");
 
@@ -217,6 +226,7 @@ const messageToConfirmPurchase = (name) =>{
             buyerId: buyerName,
             products: products,
             purchaseDate: dateFormat,
+            totalQty: totalProdQty,
             totalAmount: totalPurchase
         }
 
