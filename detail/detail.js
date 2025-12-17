@@ -19,6 +19,15 @@ detailBackBtn.addEventListener("click", ()=>{
     window.location.href = "/index.html";
 });
 
+const goToAllPurchasesBtn = document.createElement("button");
+goToAllPurchasesBtn.classList.add("goToAllPurchasesBtn");
+goToAllPurchasesBtn.innerText = "Ir a todas las compras";
+detailMain.appendChild(goToAllPurchasesBtn);
+
+goToAllPurchasesBtn.addEventListener("click", ()=>{    
+    window.location.href = "/allPurchases/allPurchases.html";
+});
+
 const renderDetailCard = (productData)=>{
     const detailCard = document.createElement("div");
     detailCard.classList.add("detailCard");
@@ -172,7 +181,8 @@ const messageToConfirmPurchase = (name) =>{
             text: `Se compró el producto ${name}`,
             icon: "success"
             });
-
+        
+        let purchaseCurrent;
         const today = new Date();
 
         const year = today.getFullYear();
@@ -189,6 +199,8 @@ const messageToConfirmPurchase = (name) =>{
 
         const dateFormat = `${day}/${month}/${year} ${hoursFormat}:${minutesFormat}:${secondsFormat}`;
 
+        console.log("producto seleccionado", productSelected);
+        
         const confPurchDateTime = document.createElement("p");
         confPurchDateTime.classList.add("confPurchDateTime");
         confPurchDateTime.innerText = `Fecha: ${dateFormat}`;
@@ -197,8 +209,8 @@ const messageToConfirmPurchase = (name) =>{
         confPurchTotalQty.classList.add("confPurchTotalQty");
 
         console.log("cant del prod seleccionado", productSelected.quantity);
-        
-        let totalProdQty = totalProdQty + productSelected.quantity;
+        let totalProdQty = 0;
+        totalProdQty = totalProdQty + productSelected.quantity;
         console.log("cant total de prods", totalProdQty);
         totalProdQty.innerText = `Cantidad total de productos: $ ${totalProdQty}`;
 
@@ -210,42 +222,79 @@ const messageToConfirmPurchase = (name) =>{
         confPurchTotal.innerText = `Total de la compra: $ ${totalPurchase}`;
 
         console.log("prods en carrito", prodsInCArtLocalStorage)
-        if(prodsInCArtLocalStorage==null){
-            
-            
-            const lastPurchaseId = 0;
+
+        const lastPurchaseIdInLocalStorage = JSON.parse(localStorage.getItem("lastPurchaseId"));
+
+        let lastPurchaseId;
+        let productoElegido = [];
+        productoElegido.push(productSelected);    
+        if(prodsInCArtLocalStorage){
+            if(lastPurchaseIdInLocalStorage==null){
+                lastPurchaseId = 1;
+            }else{
+                lastPurchaseId = lastPurchaseIdInLocalStorage + 1;
+            }
             let buyerName = prompt("Ingrese su nombre");
-            let products = prodsInCArtLocalStorage.map(product =>{
-                product.id,
-                product.quantity,
-                product.unitPrice
+            const products = productoElegido.map(prod =>{
+                return {
+                    id: prod.id,
+                    qty: prod.quantity,
+                    unitPrice: prod.price
+                }
+            })
+
+            let totalAmount = 0;
+            let totalQty = 0;
+
+            products.forEach(prod =>{
+                totalAmount += prod.qty * prod.unitPrice;
+                totalAmount = Math.round(totalAmount * 100) / 100;
+            })
+
+            products.forEach(prod =>{
+                totalQty += prod.qty;
             })
 
             const finalPurchase = {
-            purchaseId: lastPurchaseId+1,
-            buyerId: buyerName,
-            products: products,
-            purchaseDate: dateFormat,
-            totalQty: totalProdQty,
-            totalAmount: totalPurchase
+                purchaseId: lastPurchaseId,
+                buyerId: buyerName,
+                products: products,
+                purchaseDate: dateFormat,
+                totalQty: totalProdQty,
+                totalAmount: totalPurchase
+            }
+
+            //localStorage.setItem("Carrito", JSON.stringify(finalPurchase));
+
+            lastPurchaseId = finalPurchase.purchaseId;
+            
+            purchaseCurrent = finalPurchase;
+            console.log("compra actual", purchaseCurrent);
+
+            
+            let purchaseHistory = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+            purchaseHistory.push(purchaseCurrent);
+            // purchaseHistory.forEach(purchase => {
+            // })
+
+
+            localStorage.setItem("purchaseHistory", JSON.stringify(purchaseHistory));
+            console.log(purchaseHistory);
+            
+            purchaseCurrent = localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
+            console.log(finalPurchase);
+            
+            localStorage.setItem("lastPurchaseId", JSON.stringify(lastPurchaseId));
+            console.log("ultimo id de compra", lastPurchaseId);
         }
-
-        localStorage.setItem("Carrito", JSON.stringify(finalPurchase));
-
-
-        localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
-        console.log(finalPurchase);
-        
-        localStorage.setItem("lastPurchaseId", JSON.stringify(lastPurchaseId));
-        console.log("ultimo id de compra", lastPurchaseId);
-        }
-
-        prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
-
-        let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
-        history.push(finalPurchase);
-        localStorage.setItem("purchaseHistory", JSON.stringify(history));            
         window.location.href = "/purchases/purchases.html";
+        //prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
+        
+
+        // let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+        // history.push(finalPurchase);
+        // localStorage.setItem("purchaseHistory", JSON.stringify(history));            
+        // window.location.href = "/purchases/purchases.html";
         }
     });
 }

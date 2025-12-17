@@ -17,6 +17,15 @@ purchaseBackBtn.addEventListener("click", ()=>{
     }
 });
 
+const goToAllPurchasesBtn = document.createElement("button");
+goToAllPurchasesBtn.classList.add("goToAllPurchasesBtn");
+goToAllPurchasesBtn.innerText = "Ir a todas las compras";
+purchasesMain.appendChild(goToAllPurchasesBtn);
+
+goToAllPurchasesBtn.addEventListener("click", ()=>{    
+    window.location.href = "/allPurchases/allPurchases.html";
+});
+
 const renderCardPurchases = (purchaseData) =>{
     const purchaseCard = document.createElement("div");
     purchaseCard.classList.add("purchaseCard");
@@ -36,7 +45,7 @@ const renderCardPurchases = (purchaseData) =>{
 
     const totalQtyPurchase = document.createElement("p");
     totalQtyPurchase.classList.add("totalQtyPurchase");
-    totalQtyPurchase.innerText = `Cantidad de productos: ${purchaseData.totalQty}`
+    totalQtyPurchase.innerText = `Cantidad total de productos: ${purchaseData.totalQty}`
 
     const totalAmountPurchase = document.createElement("p");
     totalAmountPurchase.classList.add("totalAmountPurchase");

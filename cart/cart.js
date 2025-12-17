@@ -256,11 +256,21 @@ const messageToConfirmPurchase = () =>{
 
                 localStorage.setItem("compraCarrito", JSON.stringify(finalPurchase));
 
-                localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
+                //localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
+
+                let purchaseHistory = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+                purchaseHistory.push(finalPurchase);
+                // purchaseHistory.forEach(purchase => {
+                // })
+
+                localStorage.setItem("purchaseHistory", JSON.stringify(purchaseHistory));
+                console.log(purchaseHistory);
                 
                 localStorage.setItem("lastPurchaseId", JSON.stringify(lastPurchaseId));
             }
             
+            localStorage.removeItem("Carrito");
+            localStorage.removeItem("cantItemsCarrito");
             cartMain.innerHTML = "";    
             cartItemCount.innerHTML = "";
             window.location.href = "/purchases/purchases.html";

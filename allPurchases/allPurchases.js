@@ -1,6 +1,10 @@
 const allPurchasesMain = document.querySelector(".allPurchasesMain");
 
-const history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+const currentPurchase = JSON.parse(localStorage.getItem("purchaseCurrent"));
+const compraDesdeCarrito = JSON.parse(localStorage.getItem("compraCarrito"));
+const purchaseHistory = JSON.parse(localStorage.getItem("purchaseHistory"));
+
+//const history = //purchaseHistory
 
 const allPurchaseBackBtn = document.createElement("button");
 allPurchaseBackBtn.classList.add("allPurchaseBackBtn");
@@ -16,47 +20,105 @@ const renderCardAllPurchases = (data) =>{
     purchaseCard.classList.add("purchaseCard");
     purchaseCard.dataset.id = data.id;
 
-    const detailsProductPurchasedContainer = document.createElement("div");
-    detailsProductPurchasedContainer.classList.add("detailsProductPurchasedContainer");
+    const purchaseId = document.createElement("p");
+    purchaseId.classList.add("purchaseId");
+    purchaseId.innerText = `Id de la compra: ${data.purchaseId}`;
 
-    const purchaseProdImg = document.createElement("img");
-    purchaseProdImg.classList.add("purchaseProdImg");
-    purchaseProdImg.setAttribute("src", data.img);
+    const buyerName = document.createElement("p");
+    buyerName.classList.add("buyerName");
+    buyerName.innerText = `Comprador: ${data.buyerId}`;
 
-    const purchaseProdTitle = document.createElement("h3");
-    purchaseProdTitle.classList.add("purchaseProdTitle");
-    purchaseProdTitle.innerText = data.title;
+    const purchaseDate = document.createElement("p");
+    purchaseDate.classList.add("purchaseDate");
+    purchaseDate.innerText = `Fecha: ${data.purchaseDate}`;
 
-    const purchaseProdQty = document.createElement("p");
-    purchaseProdQty.classList.add("purchaseProdQty");
-    purchaseProdQty.innerText = `Cantidad: ${data.qty}`;
+    const totalQtyPurchase = document.createElement("p");
+    totalQtyPurchase.classList.add("totalQtyPurchase");
+    totalQtyPurchase.innerText = `Cantidad total de productos: ${data.totalQty}`;    
 
-    const purchaseProdPrice = document.createElement("p");
-    purchaseProdPrice.classList.add("purchaseProdPrice");
-    purchaseProdPrice.innerText = `Precio unitario: $ ${data.price}`;
+    const totalAmountPurchase = document.createElement("p");
+    totalAmountPurchase.classList.add("totalAmountPurchase");
+    totalAmountPurchase.innerText = `Total de las compras: $ ${data.totalAmount}`;
 
-    const confirmPurchaseContainer = document.createElement("div");
-    confirmPurchaseContainer.classList.add("confirmPurchaseContainer");
+    const moreInfoPurchase = document.createElement("button");
+    moreInfoPurchase.classList.add("moreInfoPurchase");
+    moreInfoPurchase.innerText = "Ver más info";
 
-    const confPurchDateTime = document.createElement("p");
-    confPurchDateTime.classList.add("confPurchDateTime");
-    confPurchDateTime.innerText = `Fecha: ${data.date}`;
-
-    const confPurchTotal = document.createElement("p");
-    confPurchTotal.classList.add("confPurchTotal");
-    confPurchTotal.innerText = `Total de la compra: $ ${data.total}`;
-
-    detailsProductPurchasedContainer.appendChild(purchaseProdImg);
-    detailsProductPurchasedContainer.appendChild(purchaseProdTitle);
-    detailsProductPurchasedContainer.appendChild(purchaseProdQty);
-    detailsProductPurchasedContainer.appendChild(purchaseProdPrice);
-    purchaseCard.appendChild(detailsProductPurchasedContainer);
-    purchaseCard.appendChild(confirmPurchaseContainer);
-    confirmPurchaseContainer.appendChild(confPurchDateTime);
-    confirmPurchaseContainer.appendChild(confPurchTotal);
+    purchaseCard.appendChild(purchaseId);
+    purchaseCard.appendChild(buyerName);
+    purchaseCard.appendChild(purchaseDate);
+    purchaseCard.appendChild(totalQtyPurchase);
+    purchaseCard.appendChild(totalAmountPurchase);
+    purchaseCard.appendChild(moreInfoPurchase);    
     allPurchasesMain.appendChild(purchaseCard);
+
+    let initialPurchaseId=0;
+    let selectedPurchaseId;
+
+    moreInfoPurchase.addEventListener("click", async () =>{        
+        selectedPurchaseId = data.purchaseId;
+
+        const productsPurchased = data.products;
+
+        if(selectedPurchaseId != initialPurchaseId){
+
+            productsPurchased.forEach(async (prod) =>{
+                const prodId = prod.id;
+                const infoById = await getProdTitleByProdId(prodId);
+                renderProductsPurchase(prod, infoById);
+            })
+        }
+        initialPurchaseId = selectedPurchaseId;
+    })
 }
 
-history.forEach(purchase =>{
+const getProdTitleByProdId = async (prodId) => {
+    const urlProdById = `https://dummyjson.com/products/${prodId}`    
+
+    const response = await fetch(urlProdById);
+    const responseData = await response.json();   
+    return responseData; 
+}
+
+const renderProductsPurchase = (moreInfo, infoById) =>{
+    const purchaseProdCardMoreInfo = document.createElement("div");
+    purchaseProdCardMoreInfo.classList.add("purchaseProdCardMoreInfo");
+    purchaseProdCardMoreInfo.dataset.id = moreInfo.id;
+
+    const purchaseProdImgMoreInfo = document.createElement("img");
+    purchaseProdImgMoreInfo.classList.add("purchaseProdImgMoreInfo");
+    purchaseProdImgMoreInfo.setAttribute("src", infoById.images[0]);
+
+    const purchaseProdIdMoreInfo = document.createElement("p");
+    purchaseProdIdMoreInfo.classList.add("purchaseProdIdMoreInfo");
+    purchaseProdIdMoreInfo.innerText = `ProdId de la compra: ${moreInfo.id}`;
+
+    const purchaseProdTitleMoreInfo = document.createElement("p");
+    purchaseProdTitleMoreInfo.classList.add("purchaseProdTitleMoreInfo");
+    purchaseProdTitleMoreInfo.innerText = `Producto: ${infoById.title}`;
+
+    const purchaseProdQtyMoreInfo = document.createElement("p");
+    purchaseProdQtyMoreInfo.classList.add("purchaseProdQtyMoreInfo");
+    purchaseProdQtyMoreInfo.innerText = `Cantidad: ${moreInfo.qty}`;
+
+    const purchaseProdPriceMoreInfo = document.createElement("p");
+    purchaseProdPriceMoreInfo.classList.add("purchaseProdPriceMoreInfo");
+    purchaseProdPriceMoreInfo.innerText = `Precio unitario: $ ${moreInfo.unitPrice}`;
+
+    purchaseProdCardMoreInfo.appendChild(purchaseProdImgMoreInfo);
+    purchaseProdCardMoreInfo.appendChild(purchaseProdIdMoreInfo);
+    purchaseProdCardMoreInfo.appendChild(purchaseProdTitleMoreInfo);
+    purchaseProdCardMoreInfo.appendChild(purchaseProdQtyMoreInfo);
+    purchaseProdCardMoreInfo.appendChild(purchaseProdPriceMoreInfo);
+    allPurchasesMain.appendChild(purchaseProdCardMoreInfo);
+}
+
+// if(compraDesdeCarrito){
+//     renderCardAllPurchases(compraDesdeCarrito);
+// }else if(currentPurchase){
+//     renderCardAllPurchases(currentPurchase);
+// }
+purchaseHistory.forEach(purchase => {
     renderCardAllPurchases(purchase);
 })
+

@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.goToAllPurchasesBtn{
+    display: flex;
+}
+
 .purchaseProdImg{
     width: 30px;
     height: 30px;
@@ -40,6 +44,7 @@
 .confirmPurchaseBtn:hover{
     background-color:darkgreen;
 }
+
 .moreInfoPurchase{
     display: flex;
     padding: 10px;
