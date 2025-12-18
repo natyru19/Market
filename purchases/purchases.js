@@ -29,7 +29,7 @@ goToAllPurchasesBtn.addEventListener("click", ()=>{
 const renderCardPurchases = (purchaseData) =>{
     const purchaseCard = document.createElement("div");
     purchaseCard.classList.add("purchaseCard");
-    purchaseCard.dataset.id = purchaseData.id;
+    purchaseCard.dataset.id = purchaseData.purchaseId;
 
     const purchaseId = document.createElement("p");
     purchaseId.classList.add("purchaseId");

@@ -4,8 +4,6 @@ const currentPurchase = JSON.parse(localStorage.getItem("purchaseCurrent"));
 const compraDesdeCarrito = JSON.parse(localStorage.getItem("compraCarrito"));
 const purchaseHistory = JSON.parse(localStorage.getItem("purchaseHistory"));
 
-//const history = //purchaseHistory
-
 const allPurchaseBackBtn = document.createElement("button");
 allPurchaseBackBtn.classList.add("allPurchaseBackBtn");
 allPurchaseBackBtn.innerText = "Volver";
@@ -15,10 +13,12 @@ allPurchaseBackBtn.addEventListener("click", ()=>{
     window.location.href = "/index.html";
 });
 
+    
+
 const renderCardAllPurchases = (data) =>{
     const purchaseCard = document.createElement("div");
     purchaseCard.classList.add("purchaseCard");
-    purchaseCard.dataset.id = data.id;
+    purchaseCard.dataset.id = data.purchaseId;
 
     const purchaseId = document.createElement("p");
     purchaseId.classList.add("purchaseId");
@@ -40,35 +40,43 @@ const renderCardAllPurchases = (data) =>{
     totalAmountPurchase.classList.add("totalAmountPurchase");
     totalAmountPurchase.innerText = `Total de las compras: $ ${data.totalAmount}`;
 
-    const moreInfoPurchase = document.createElement("button");
-    moreInfoPurchase.classList.add("moreInfoPurchase");
-    moreInfoPurchase.innerText = "Ver más info";
+    const displayInfo = document.createElement("button");
+    displayInfo.classList.add("displayInfo");    
+    displayInfo.innerText = "Ver más info";
 
     purchaseCard.appendChild(purchaseId);
     purchaseCard.appendChild(buyerName);
     purchaseCard.appendChild(purchaseDate);
     purchaseCard.appendChild(totalQtyPurchase);
     purchaseCard.appendChild(totalAmountPurchase);
-    purchaseCard.appendChild(moreInfoPurchase);    
+    purchaseCard.appendChild(displayInfo);    
     allPurchasesMain.appendChild(purchaseCard);
 
     let initialPurchaseId=0;
     let selectedPurchaseId;
+    let showInfo = false;
 
-    moreInfoPurchase.addEventListener("click", async () =>{        
+    displayInfo.addEventListener("click", async () =>{
         selectedPurchaseId = data.purchaseId;
-
         const productsPurchased = data.products;
 
         if(selectedPurchaseId != initialPurchaseId){
-
             productsPurchased.forEach(async (prod) =>{
                 const prodId = prod.id;
                 const infoById = await getProdTitleByProdId(prodId);
-                renderProductsPurchase(prod, infoById);
+
+                showInfo = !showInfo;
+                if(showInfo){                    
+                    displayInfo.innerText = "Ver menos";
+                    renderProductsPurchase(prod, infoById, purchaseCard);
+                }else{
+                    displayInfo.innerText = "Ver más info";
+                    purchaseCard.querySelectorAll(".purchaseProdCardMoreInfo").forEach(purchase =>{
+                        purchase.remove();
+                    })
+                }
             })
         }
-        initialPurchaseId = selectedPurchaseId;
     })
 }
 
@@ -80,10 +88,13 @@ const getProdTitleByProdId = async (prodId) => {
     return responseData; 
 }
 
-const renderProductsPurchase = (moreInfo, infoById) =>{
+const renderProductsPurchase = (moreInfo, infoById, purchaseCard) =>{
     const purchaseProdCardMoreInfo = document.createElement("div");
     purchaseProdCardMoreInfo.classList.add("purchaseProdCardMoreInfo");
     purchaseProdCardMoreInfo.dataset.id = moreInfo.id;
+
+    const purchaseProdMoreInfoContainer = document.createElement("div");
+    purchaseProdMoreInfoContainer.classList.add("purchaseProdMoreInfoContainer");
 
     const purchaseProdImgMoreInfo = document.createElement("img");
     purchaseProdImgMoreInfo.classList.add("purchaseProdImgMoreInfo");
@@ -105,19 +116,15 @@ const renderProductsPurchase = (moreInfo, infoById) =>{
     purchaseProdPriceMoreInfo.classList.add("purchaseProdPriceMoreInfo");
     purchaseProdPriceMoreInfo.innerText = `Precio unitario: $ ${moreInfo.unitPrice}`;
 
-    purchaseProdCardMoreInfo.appendChild(purchaseProdImgMoreInfo);
-    purchaseProdCardMoreInfo.appendChild(purchaseProdIdMoreInfo);
-    purchaseProdCardMoreInfo.appendChild(purchaseProdTitleMoreInfo);
-    purchaseProdCardMoreInfo.appendChild(purchaseProdQtyMoreInfo);
-    purchaseProdCardMoreInfo.appendChild(purchaseProdPriceMoreInfo);
-    allPurchasesMain.appendChild(purchaseProdCardMoreInfo);
+    purchaseProdMoreInfoContainer.appendChild(purchaseProdImgMoreInfo);
+    purchaseProdMoreInfoContainer.appendChild(purchaseProdIdMoreInfo);
+    purchaseProdMoreInfoContainer.appendChild(purchaseProdTitleMoreInfo);
+    purchaseProdMoreInfoContainer.appendChild(purchaseProdQtyMoreInfo);
+    purchaseProdMoreInfoContainer.appendChild(purchaseProdPriceMoreInfo);
+    purchaseProdCardMoreInfo.appendChild(purchaseProdMoreInfoContainer);
+    purchaseCard.appendChild(purchaseProdCardMoreInfo);
 }
 
-// if(compraDesdeCarrito){
-//     renderCardAllPurchases(compraDesdeCarrito);
-// }else if(currentPurchase){
-//     renderCardAllPurchases(currentPurchase);
-// }
 purchaseHistory.forEach(purchase => {
     renderCardAllPurchases(purchase);
 })
