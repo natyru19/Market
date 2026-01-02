@@ -13,8 +13,6 @@ allPurchaseBackBtn.addEventListener("click", ()=>{
     window.location.href = "/index.html";
 });
 
-    
-
 const renderCardAllPurchases = (data) =>{
     const purchaseCard = document.createElement("div");
     purchaseCard.classList.add("purchaseCard");
@@ -52,29 +50,24 @@ const renderCardAllPurchases = (data) =>{
     purchaseCard.appendChild(displayInfo);    
     allPurchasesMain.appendChild(purchaseCard);
 
-    let initialPurchaseId=0;
-    let selectedPurchaseId;
-    let showInfo = false;
+    let showInfo = false;    
 
     displayInfo.addEventListener("click", async () =>{
         selectedPurchaseId = data.purchaseId;
         const productsPurchased = data.products;
 
-        if(selectedPurchaseId != initialPurchaseId){
-            productsPurchased.forEach(async (prod) =>{
-                const prodId = prod.id;
-                const infoById = await getProdTitleByProdId(prodId);
-
-                showInfo = !showInfo;
-                if(showInfo){                    
-                    displayInfo.innerText = "Ver menos";
-                    renderProductsPurchase(prod, infoById, purchaseCard);
-                }else{
-                    displayInfo.innerText = "Ver más info";
-                    purchaseCard.querySelectorAll(".purchaseProdCardMoreInfo").forEach(purchase =>{
-                        purchase.remove();
-                    })
-                }
+        showInfo = !showInfo;
+        if(showInfo){                    
+            displayInfo.innerText = "Ver menos";
+            
+            for(const prod of productsPurchased){
+                const infoById = await getProdTitleByProdId(prod.id);
+                renderProductsPurchase(prod, infoById, purchaseCard);
+            }
+        }else{
+            displayInfo.innerText = "Ver más info";
+            purchaseCard.querySelectorAll(".purchaseProdCardMoreInfo").forEach(purchase =>{
+                purchase.remove();
             })
         }
     })

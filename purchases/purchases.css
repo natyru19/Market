@@ -45,14 +45,14 @@
     background-color:darkgreen;
 }
 
-.moreInfoPurchase{
+.displayInfo{
     display: flex;
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;    
 }
 
-.moreInfoPurchase:hover{
+.displayInfo:hover{
     background-color: darkgray;
 }
 

@@ -254,7 +254,7 @@ const messageToConfirmPurchase = () =>{
 
                 lastPurchaseId = finalPurchase.purchaseId;
 
-                localStorage.setItem("compraCarrito", JSON.stringify(finalPurchase));
+                localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
 
                 //localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
 

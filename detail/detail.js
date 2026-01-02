@@ -269,23 +269,15 @@ const messageToConfirmPurchase = (name) =>{
             lastPurchaseId = finalPurchase.purchaseId;
             
             purchaseCurrent = finalPurchase;
-            console.log("compra actual", purchaseCurrent);
-
             
             let purchaseHistory = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
             purchaseHistory.push(purchaseCurrent);
-            // purchaseHistory.forEach(purchase => {
-            // })
-
-
+            
             localStorage.setItem("purchaseHistory", JSON.stringify(purchaseHistory));
-            console.log(purchaseHistory);
             
             purchaseCurrent = localStorage.setItem("purchaseCurrent", JSON.stringify(finalPurchase));
-            console.log(finalPurchase);
             
             localStorage.setItem("lastPurchaseId", JSON.stringify(lastPurchaseId));
-            console.log("ultimo id de compra", lastPurchaseId);
         }
         window.location.href = "/purchases/purchases.html";
         //prodsInCArtLocalStorage = JSON.parse(localStorage.getItem("Carrito"));
